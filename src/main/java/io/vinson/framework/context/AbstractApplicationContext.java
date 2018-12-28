@@ -122,6 +122,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext, 
     //---------------------------------------------------------------------
     // Implementation of BeanFactory interface
     //---------------------------------------------------------------------
+
     @Override
     public Object getBean(String name) {
         return getBeanFactory().getBean(name);
@@ -130,6 +131,16 @@ public abstract class AbstractApplicationContext implements ApplicationContext, 
     @Override
     public <T> T getBean(String name, Class<T> requiredType) {
         return getBeanFactory().getBean(name, requiredType);
+    }
+
+    @Override
+    public <T> T getBean(Class<T> requiredType) {
+        return getBeanFactory().getBean(requiredType);
+    }
+
+    @Override
+    public <T> T getBean(Class<T> requiredType, Object... args) {
+        return getBeanFactory().getBean(requiredType, args);
     }
 
     @Override
@@ -146,6 +157,12 @@ public abstract class AbstractApplicationContext implements ApplicationContext, 
     //---------------------------------------------------------------------
     // Implementation of ListableBeanFactory interface
     //---------------------------------------------------------------------
+
+    @Override
+    public String[] getBeanNamesForType(Class<?> type) {
+        return getBeanFactory().getBeanNamesForType(type);
+    }
+
     @Override
     public <T> Map<String, T> getBeansOfType(Class<T> type) {
         return getBeanFactory().getBeansOfType(type);
@@ -155,6 +172,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext, 
     //---------------------------------------------------------------------
     // Implementation of Lifecycle interface
     //---------------------------------------------------------------------
+
     @Override
     public void start() {
 
@@ -174,6 +192,10 @@ public abstract class AbstractApplicationContext implements ApplicationContext, 
     //---------------------------------------------------------------------
     // Abstract methods
     //---------------------------------------------------------------------
+
+    /**
+     * 刷新beanFactory，由子类实现
+     */
     protected abstract void refreshBeanFactory();
 
 }
