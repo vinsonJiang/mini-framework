@@ -11,10 +11,11 @@ import java.net.URL;
  */
 public class DefaultResourceLoader implements ResourceLoader {
 
+    private ClassLoader classLoader;
 
     @Override
     public Resource getResource(String location) {
-        Assert.notNull(location, "location 不能为空");
+        Assert.notNull(location, "location must not be null");
         URL url = this.getClass().getClassLoader().getResource(location);
         return new UrlResource(url);
 //        try {
@@ -25,5 +26,14 @@ public class DefaultResourceLoader implements ResourceLoader {
 //            e.printStackTrace();
 //        }
 //        return null;
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return null;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 }

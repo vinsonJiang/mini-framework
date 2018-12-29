@@ -15,7 +15,7 @@ import java.util.Set;
  * @author: jiangweixin
  * @date: 2018/12/20
  */
-public abstract class AbstractApplicationContext implements ApplicationContext, Lifecycle {
+public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ApplicationContext, Lifecycle {
 
     /** 父容器 */
     private ApplicationContext parent;
@@ -37,6 +37,8 @@ public abstract class AbstractApplicationContext implements ApplicationContext, 
     private Set<ApplicationEvent> applicationEvents;
 
     private DefaultListableBeanFactory beanFactory;
+
+    private String[] configLocations;
 
     public AbstractApplicationContext() {
         resourceLoader  = new DefaultResourceLoader();
@@ -77,6 +79,24 @@ public abstract class AbstractApplicationContext implements ApplicationContext, 
     @Override
     public long getStartupDate() {
         return startupDate;
+    }
+
+    public String[] getConfigLocations() {
+        return configLocations;
+    }
+
+    public void setConfigLocations(String[] configLocations) {
+        if(configLocations != null) {
+            if(configLocations.length <= 0) {
+                throw new IllegalStateException("configLocations must not be null");
+            }
+            this.configLocations = new String[configLocations.length];
+            for (int i = 0; i < configLocations.length; i++) {
+                this.configLocations[i] = configLocations[i].trim();
+            }
+        } else {
+            this.configLocations = null;
+        }
     }
 
     public void refresh() {
