@@ -1,6 +1,7 @@
 package io.vinson.framework.context;
 
 import io.vinson.framework.beans.factory.support.DefaultListableBeanFactory;
+import io.vinson.framework.beans.factory.support.XmlBeanDefinitionReader;
 
 /**
  * @Description:
@@ -17,6 +18,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractApplicationC
     }
 
     public void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) {
-
+        XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
+        beanDefinitionReader.loadBeanDefinitions(getConfigLocations());
     }
 }

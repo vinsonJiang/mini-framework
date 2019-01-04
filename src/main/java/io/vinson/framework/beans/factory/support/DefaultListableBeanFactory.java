@@ -1,5 +1,7 @@
 package io.vinson.framework.beans.factory.support;
 
+import io.vinson.framework.beans.exception.NoSuchBeanDefinitionException;
+import io.vinson.framework.beans.factory.BeanFactory;
 import io.vinson.framework.beans.factory.ListableBeanFactory;
 import io.vinson.framework.beans.factory.config.AbstractAutowireCapableBeanFactory;
 import io.vinson.framework.beans.factory.config.BeanDefinition;
@@ -19,6 +21,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
+    public DefaultListableBeanFactory() {
+        super();
+    }
+
+    public DefaultListableBeanFactory(BeanFactory parent) {
+        super(parent);
+    }
+
     //---------------------------------------------------------------------
     // Implementation of remaining BeanFactory methods
     //---------------------------------------------------------------------
@@ -30,7 +40,23 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public <T> T getBean(Class<T> requiredType, Object... args) {
-        return null;
+        Assert.notNull(requiredType, "RequiredType must not be null");
+        String[] beanNames = getBeanNamesForType(requiredType);
+        if(beanNames.length > 1) {
+
+        }
+        if(beanNames.length == 1) {
+            String beanName = beanNames[0];
+            T beanInstance = getBean(beanName, requiredType);
+            if(beanInstance == null) {
+                throw new NoSuchBeanDefinitionException("No such bean of type: " + requiredType);
+            }
+            return beanInstance;
+        } else if(beanNames.length > 1) {
+            return null;
+        }
+
+        throw new NoSuchBeanDefinitionException("No such bean of type: " + requiredType);
     }
 
     //---------------------------------------------------------------------
@@ -39,7 +65,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public String[] getBeanNamesForType(Class<?> type) {
-        return new String[0];
+
+        return doGetBeanNamesForType(type);
     }
 
     @Override
@@ -51,7 +78,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     }
 
 
-    private String[] doGetBeanNamesForType() {
+    private String[] doGetBeanNamesForType(Class<?> type) {
         return null;
     }
 

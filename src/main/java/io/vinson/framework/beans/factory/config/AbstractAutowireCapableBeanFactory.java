@@ -22,11 +22,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         setParentBeanFactory(parentBeanFactory);
     }
 
+    @Override
     public <T> T createBean(Class<T> beanClass) {
         RootBeanDefinition rootBean = new RootBeanDefinition(beanClass);
         return (T) createBean(beanClass.getName(), rootBean, null);
     }
 
+    @Override
     protected Object createBean(String beanName, RootBeanDefinition rootBean, Object[] args) {
 
         RootBeanDefinition mbdToUse = rootBean;

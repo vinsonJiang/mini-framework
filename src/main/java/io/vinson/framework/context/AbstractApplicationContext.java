@@ -36,7 +36,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     private Set<ApplicationEvent> applicationEvents;
 
-    private DefaultListableBeanFactory beanFactory;
+//    private DefaultListableBeanFactory beanFactory;
 
     private String[] configLocations;
 
@@ -132,11 +132,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     }
 
-    public ListableBeanFactory getBeanFactory() {
-        if(this.beanFactory == null) {
-            throw new IllegalStateException("beanFactory is null");
-        }
-        return this.beanFactory;
+    public abstract ListableBeanFactory getBeanFactory();
+
+    public DefaultListableBeanFactory createBeanFactory() {
+        return new DefaultListableBeanFactory();
     }
 
     //---------------------------------------------------------------------

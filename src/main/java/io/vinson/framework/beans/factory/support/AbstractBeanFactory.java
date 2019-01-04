@@ -1,8 +1,10 @@
 package io.vinson.framework.beans.factory.support;
 
+import io.vinson.framework.beans.exception.BeanCreationException;
 import io.vinson.framework.beans.factory.BeanFactory;
 import io.vinson.framework.beans.factory.config.BeanDefinition;
 import io.vinson.framework.core.util.Assert;
+import io.vinson.framework.core.util.ClassUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,9 +18,13 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
     private BeanFactory parentBeanFactory;
 
-    private ClassLoader beanClassLoader;
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     private final Map<String, RootBeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
+
+    public AbstractBeanFactory() {
+
+    }
 
     //---------------------------------------------------------------------
     // Implementation of BeanFactory interface
@@ -50,11 +56,22 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
         BeanFactory tempParentBeanFactory = getParentBeanFactory();
 
-        Object bean;
         BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
-        Assert.notNull(beanDefinition, "beanName:[" + beanName + "] is not defined");
-        bean = beanDefinition;
-        return (T)bean;
+        Object bean = beanDefinition;
+        if(beanDefinition != null) {
+            return (T) bean;
+        }
+        if(requiredType != null) {
+//            Object instance = createBean(name, null, null);
+            Object instance = createBean(requiredType);
+            return (T) instance;
+        }
+
+        throw new BeanCreationException("beanName:[" + beanName + "] can not be created");
+
+//        Assert.notNull(beanDefinition, "beanName:[" + beanName + "] is not defined");
+//
+//        return (T)bean;
     }
 
     public void setParentBeanFactory(BeanFactory parentBeanFactory) {
@@ -82,5 +99,11 @@ public abstract class AbstractBeanFactory implements BeanFactory {
         return rootBeanDefinition.resolveBeanClass(beanClassLoader);
 
     }
+    //---------------------------------------------------------------------
+    // Abstract methods to be implemented by subclasses
+    //---------------------------------------------------------------------
 
+    public abstract <T> T createBean(Class<T> beanClass);
+
+    protected abstract Object createBean(String beanName, RootBeanDefinition rootBean, Object[] args);
 }

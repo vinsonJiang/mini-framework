@@ -1,6 +1,9 @@
 package io.vinson.framework.context;
 
 
+import io.vinson.framework.beans.factory.ListableBeanFactory;
+import io.vinson.framework.beans.factory.support.DefaultListableBeanFactory;
+
 /**
  * @Description:
  *
@@ -9,6 +12,7 @@ package io.vinson.framework.context;
  */
 public class FileSystemXmlApplicationContext extends AbstractXmlApplicationContext {
 
+    private DefaultListableBeanFactory beanFactory;
 
     public FileSystemXmlApplicationContext() {
 
@@ -16,6 +20,10 @@ public class FileSystemXmlApplicationContext extends AbstractXmlApplicationConte
 
     public FileSystemXmlApplicationContext(ApplicationContext parent) {
         super(parent);
+    }
+
+    public FileSystemXmlApplicationContext(String... configLocations) {
+        this(configLocations, null, true);
     }
 
     public FileSystemXmlApplicationContext(String[] configLocations, ApplicationContext parent) {
@@ -36,7 +44,16 @@ public class FileSystemXmlApplicationContext extends AbstractXmlApplicationConte
 
     @Override
     protected final void refreshBeanFactory() {
-
+        DefaultListableBeanFactory tempBeanFactory = createBeanFactory();
+        loadBeanDefinitions(tempBeanFactory);
+        this.beanFactory = tempBeanFactory;
     }
 
+    @Override
+    public  ListableBeanFactory getBeanFactory() {
+        if(this.beanFactory == null) {
+            throw new IllegalStateException("beanFactory is null");
+        }
+        return this.beanFactory;
+    }
 }

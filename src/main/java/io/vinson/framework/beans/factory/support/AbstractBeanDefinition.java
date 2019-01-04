@@ -84,7 +84,8 @@ public abstract class AbstractBeanDefinition implements BeanDefinition, Cloneabl
      * @return
      */
     public boolean hasBeanClass() {
-        return this.beanClass instanceof Class;
+        return false;
+//        return this.beanClass instanceof Class;
     }
 
     public Class<?> resolveBeanClass(ClassLoader classLoader) throws ClassNotFoundException {
