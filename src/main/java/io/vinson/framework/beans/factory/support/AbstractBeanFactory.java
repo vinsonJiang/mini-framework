@@ -20,7 +20,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
-    private final Map<String, RootBeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
+    protected final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
     public AbstractBeanFactory() {
 
@@ -59,6 +59,16 @@ public abstract class AbstractBeanFactory implements BeanFactory {
         BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
         Object bean = beanDefinition;
         if(beanDefinition != null) {
+            if(beanDefinition instanceof RootBeanDefinition) {
+                try {
+                    Object object = ((RootBeanDefinition) beanDefinition).getBeanClass().newInstance();
+                    return (T) object;
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
             return (T) bean;
         }
         if(requiredType != null) {

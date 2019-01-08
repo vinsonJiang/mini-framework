@@ -1,5 +1,6 @@
 package io.vinson.framework.beans.factory.support;
 
+import io.vinson.framework.beans.factory.config.BeanDefinition;
 import io.vinson.framework.beans.factory.config.BeanDefinitionHolder;
 import io.vinson.framework.core.io.Resource;
 import io.vinson.framework.core.util.Assert;
@@ -49,6 +50,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         return 0;
     }
 
+    /**
+     *
+     * @param resource
+     * @return
+     */
     protected int doLoadBeanDefinitions(Resource resource) {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -63,43 +69,64 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return 0;
     }
 
-
-    public int registerBeanDefinitions(Document document, Resource resource) {
+    /**
+     * 解析DOM文件，注册文件中定义的bean definitions
+     * @param document
+     * @param resource
+     * @return
+     */
+    public int registerBeanDefinitions(Document document, Resource resource) throws ClassNotFoundException {
 
         XmlBeanDefinitionParser parser = new XmlBeanDefinitionParser();
         int beforeCount = getRegistry().getBeanDefinitionCount();
 
         Element root = document.getDocumentElement();
-        doRegisterBeanDefinitions(root);
-
+        parseBeanDefinitions(root);
 
         return getRegistry().getBeanDefinitionCount() - beforeCount;
     }
 
+    /**
+     * 解析节点并注册bean definitions
+     * @param root
+     */
     public void doRegisterBeanDefinitions(Element root) {
-        parseBeanDefinitions(root);
-
-        BeanDefinitionHolder definitionHolder = null;
-        getRegistry().registerBeanDefinition(definitionHolder.getBeanName(), definitionHolder.getBeanDefinition());
+//        parseBeanDefinitions(root);
     }
 
-
-    protected void parseBeanDefinitions(Element root) {
+    /**
+     * 解析文件节点，转换成BeanDefinitions，注册到register
+     * @param root
+     */
+    protected void parseBeanDefinitions(Element root) throws ClassNotFoundException {
         NodeList nodeList = root.getChildNodes();
         for(int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             if(node instanceof Element) {
                 Element element = (Element) node;
-                parseElement(element);
+                BeanDefinitionHolder definitionHolder = parseElement(element);
+                getRegistry().registerBeanDefinition(definitionHolder.getBeanName(), definitionHolder.getBeanDefinition());
             }
         }
     }
 
-    private void parseElement(Element element) {
+    private BeanDefinitionHolder parseElement(Element element) throws ClassNotFoundException {
 
+        String name = element.getAttribute("id");
+        String className = element.getAttribute("class");
+        Class<?> clazz = Class.forName(className);
+
+        BeanDefinition beanDefinition = new RootBeanDefinition(clazz);
+        beanDefinition.setBeanClassName(className);
+
+        BeanDefinitionHolder beanDefinitionHolder = new BeanDefinitionHolder(beanDefinition, name);
+
+        return beanDefinitionHolder;
     }
 }

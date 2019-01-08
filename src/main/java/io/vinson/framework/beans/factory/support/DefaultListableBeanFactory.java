@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements ListableBeanFactory, BeanDefinitionRegistry {
 
-    private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
+//    private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
     public DefaultListableBeanFactory() {
         super();
@@ -114,6 +114,6 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public int getBeanDefinitionCount() {
-        return 0;
+        return beanDefinitionMap.size();
     }
 }

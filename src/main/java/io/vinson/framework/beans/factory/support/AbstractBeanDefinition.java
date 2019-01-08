@@ -15,6 +15,8 @@ public abstract class AbstractBeanDefinition implements BeanDefinition, Cloneabl
 
     private volatile Object beanClass;
 
+    private String beanClassName;
+
     private boolean isAbstract = false;
 
     private String description;
@@ -27,7 +29,7 @@ public abstract class AbstractBeanDefinition implements BeanDefinition, Cloneabl
 
     @Override
     public void setBeanClassName(String beanClassName) {
-        this.beanClass = beanClassName;
+        this.beanClassName = beanClassName;
     }
 
     @Override
