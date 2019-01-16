@@ -58,8 +58,35 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
 
-//    protected Object createBeanInstance(String beanName, RootBeanDefinition rootBean, Object[] args) {
-//        Class<?> beanClass = resolveBeanClass(beanName, rootBean);
-//        return beanClass;
-//    }
+
+    /**
+     * 获取 Bean 实例，执行{@code postProcessBeforeInitialization} 方法
+     * 返回被修饰的bean
+     * @param bean
+     * @param beanName
+     * @return
+     */
+    public Object applyBeanPostProcessorsBeforeInitialization(Object bean, String beanName) {
+        Object result = bean;
+        for(BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            Object current = beanPostProcessor.postProcessorBeforeInitialization(result, beanName);
+            if(current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
+    }
+
+    public Object applyBeanPostProcessorsAfterInitialization(Object bean, String beanName) {
+        Object result = bean;
+        for(BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            Object current = beanPostProcessor.postProcessorAfterInitialization(result, beanName);
+            if(current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
+    }
 }

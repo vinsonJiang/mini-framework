@@ -3,9 +3,12 @@ package io.vinson.framework.beans.factory.support;
 import io.vinson.framework.beans.exception.BeanCreationException;
 import io.vinson.framework.beans.factory.BeanFactory;
 import io.vinson.framework.beans.factory.config.BeanDefinition;
+import io.vinson.framework.beans.factory.config.BeanPostProcessor;
 import io.vinson.framework.core.util.Assert;
 import io.vinson.framework.core.util.ClassUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,6 +24,8 @@ public abstract class AbstractBeanFactory implements BeanFactory {
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     protected final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
+
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
     public AbstractBeanFactory() {
 
@@ -109,6 +114,23 @@ public abstract class AbstractBeanFactory implements BeanFactory {
         return rootBeanDefinition.resolveBeanClass(beanClassLoader);
 
     }
+
+
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
+        Assert.notNull(beanPostProcessor, "BeanPostProcessor must not be null");
+
+        this.beanPostProcessors.remove(beanPostProcessor);
+        this.beanPostProcessors.add(beanPostProcessor);
+    }
+
+    public int getBeanPostProcessorCount() {
+        return this.beanPostProcessors.size();
+    }
+
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
+    }
+
     //---------------------------------------------------------------------
     // Abstract methods to be implemented by subclasses
     //---------------------------------------------------------------------
