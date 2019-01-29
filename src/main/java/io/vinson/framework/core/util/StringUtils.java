@@ -10,4 +10,22 @@ public class StringUtils {
     public static boolean isEmpty(Object str) {
         return (str == null || "".equals(str));
     }
+
+    /**
+     * 判断是否包含有效字符
+     * @param str
+     * @return
+     */
+    public static boolean hasText(String str) {
+        return (str != null && !str.isEmpty() && containsText(str));
+    }
+
+    private static boolean containsText(String str) {
+        for(int i = 0; i < str.length(); i++) {
+            if(!Character.isWhitespace(str.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

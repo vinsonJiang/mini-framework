@@ -1,5 +1,10 @@
 package io.vinson.framework.beans.factory.support;
 
+import io.vinson.framework.beans.factory.config.BeanDefinition;
+import io.vinson.framework.beans.factory.config.BeanDefinitionHolder;
+import org.w3c.dom.Element;
+
+
 /**
  * @Description:
  * @author: jiangweixin
@@ -30,4 +35,14 @@ public class XmlBeanDefinitionParser {
     public static final String DESTROY_METHOD_ATTRIBUTE = "destroy-method";
 
     public static final String NULL_ELEMENT = "null";
+
+
+    public BeanDefinitionHolder parseBeanDefinitionElement(Element element, BeanDefinition beanDefinition) {
+        String id = element.getAttribute(ID_ATTRIBUTE);
+        String name = element.getAttribute(NAME_ATTRIBUTE);
+
+        // TODO
+
+        return new BeanDefinitionHolder(beanDefinition, id);
+    }
 }
